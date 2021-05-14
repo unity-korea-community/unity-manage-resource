@@ -1,0 +1,11 @@
+{
+  "name": "unko.[packageName]",
+  "version": "1.0.0",
+  "displayName": "[packageName]",
+  "description": "This is an example package",
+  "unity": "2019.1",
+  "author": {
+    "name": "UNKO",
+    "url": "https://github.com/unity-korea-community"
+  }
+}
