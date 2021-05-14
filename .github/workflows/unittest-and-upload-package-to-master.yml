@@ -23,11 +23,11 @@ env:
   UNITY_VERSION: 2019.3.8f1
 
   # require Deploy
-  THIS_REPOSITORY: [packageName]
+  THIS_REPOSITORY: manage-resource
   SRC_BRANCH: workspace
   DEST_OWNER: unity-korea-community
   DEST_BRANCH: master
-  WORK_PATH: Assets/[packageName]
+  WORK_PATH: Packages/manage-resource
   PACKAGES_PATH: Packages
 
 jobs:

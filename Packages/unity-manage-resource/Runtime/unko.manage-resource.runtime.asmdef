@@ -1,0 +1,15 @@
+{
+    "name": "unko.manage-resource.runtime",
+    "references": [
+        "GUID:8367a353d1461614a86d17cfc47e5448"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "unko.manage-resource.runtime.tests",
+    "references": [
+        "GUID:d390ba266611fdc448683c1db0d3437b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
