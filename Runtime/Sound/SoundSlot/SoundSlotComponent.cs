@@ -10,33 +10,53 @@ namespace UNKO.ManageResource
     {
         private const float const_deltaTime = 0.1f;
 
+        public event Action<IResourcePlayer> OnPlayStart;
+        public event Action<IResourcePlayer> OnPlayFinish;
+
         [SerializeField]
         private AudioSource _audioSource; public AudioSource audioSource => _audioSource;
+        [SerializeField]
+        private float _globalVolume = 0.5f;
+        [SerializeField]
+        private float _localVolume = 0.5f;
 
-        public bool isPlaying => _audioSource.isPlaying;
+        public AudioClip clip { get => audioSource.clip; set => audioSource.clip = value; }
+        public float globalVolume { get => _globalVolume; set => _globalVolume = value; }
+        public float localVolume { get => _localVolume; set => _localVolume = value; }
 
-        public event Action<ISoundSlot> OnPlayStartAudio;
-        public event Action<ISoundSlot> OnPlayFinishAudio;
+        public bool IsPlaying() => _audioSource.isPlaying;
 
-        public ISoundSlot PlaySound(bool loop = false)
+
+        public Coroutine Play()
         {
-            StartCoroutine(PlaySoundCoroutine(loop));
-
-            return this;
+            return StartCoroutine(PlaySoundCoroutine(false));
         }
 
-        public ISoundSlot SetAudioClip(AudioClip clip)
+        public void Reset()
         {
-            audioSource.clip = clip;
-
-            return this;
+            throw new NotImplementedException();
         }
 
-        public ISoundSlot SetVolume(float volume_0_1)
+        public void SetDelay(float delay)
         {
-            audioSource.volume = volume_0_1;
+            throw new NotImplementedException();
+        }
 
-            return this;
+        public void SetLoop(bool isLoop)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ISoundSlot SetGlobalVolume(float volume_0_1)
+        {
+            _globalVolume = volume_0_1;
+            return UpdateVolume();
+        }
+
+        public ISoundSlot SetLocalVolume(float volume_0_1)
+        {
+            _localVolume = volume_0_1;
+            return UpdateVolume();
         }
 
         public void Stop()
@@ -44,15 +64,23 @@ namespace UNKO.ManageResource
             audioSource.Stop();
         }
 
+
         private void Awake()
         {
             _audioSource = GetComponent<AudioSource>();
         }
 
+        private ISoundSlot UpdateVolume()
+        {
+            audioSource.volume = _localVolume * _globalVolume;
+
+            return this;
+        }
+
         IEnumerator PlaySoundCoroutine(bool loop)
         {
             audioSource.Play();
-            OnPlayStartAudio?.Invoke(this);
+            OnPlayStart?.Invoke(this);
 
             float delayTime = 0f;
             if (audioSource.loop)
@@ -80,7 +108,7 @@ namespace UNKO.ManageResource
                 gameObject.SetActive(false);
             }
 
-            // OnPlayFinishAudio?.Invoke(this);
+            OnPlayFinish?.Invoke(this);
         }
     }
 }

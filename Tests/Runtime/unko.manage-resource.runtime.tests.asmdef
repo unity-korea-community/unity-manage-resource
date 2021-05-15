@@ -1,11 +1,10 @@
 {
     "name": "unko.manage-resource.runtime.tests",
     "references": [
-        "GUID:d390ba266611fdc448683c1db0d3437b"
+        "GUID:d390ba266611fdc448683c1db0d3437b",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
