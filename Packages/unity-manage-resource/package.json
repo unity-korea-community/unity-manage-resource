@@ -10,6 +10,6 @@
   },
   "hideInEditor": false,
   "dependencies": {
-    "com.unko.unity-utils": "1.0.1"
+    "com.unko.unity-utils": "1.0.2"
   }
 }

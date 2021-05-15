@@ -1,0 +1,3 @@
+[submodule "Packages/unity-utils"]
+	path = Packages/unity-utils
+	url = https://github.com/unity-korea-community/unity-utils.git
