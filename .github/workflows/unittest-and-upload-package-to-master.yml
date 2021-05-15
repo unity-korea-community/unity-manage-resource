@@ -59,11 +59,6 @@ jobs:
           PATTERNS: |
             ${{ env.WORK_PATH }}/**/*.cs
 
-      # copy UnityProject/Assets/Package to UnityProject/Packages
-      - name: ${{ env.WORK_PATH }} copy to ${{ env.PACKAGES_PATH }}
-        run: |
-          mv -v ${{ env.WORK_PATH }} ${{ env.PACKAGES_PATH }}
-
       # 예전 버전으로 하면 라이센스 인증이 안됨.. 그래서 동작하는 알파로 변경
       - uses: game-ci/unity-test-runner@v2.0-alpha-4 # https://github.com/marketplace/actions/unity-test-runner
         if: env.GIT_DIFF
