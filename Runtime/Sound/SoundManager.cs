@@ -12,8 +12,9 @@ namespace UNKO.ManageResource
         [SerializeField]
         protected float _localVolume = 0.5f;
 
-        public float globalVolume { get => _globalVolume; set => _globalVolume = value; }
-        public float localVolume { get => _localVolume; set => _localVolume = value; }
+        public virtual float globalVolume { get => _globalVolume; set => _globalVolume = value; }
+        public virtual float localVolume { get => _localVolume; set => _localVolume = value; }
+
         public abstract AudioClip clip { get; set; }
 
         public abstract bool IsPlaying();
@@ -51,9 +52,15 @@ namespace UNKO.ManageResource
         {
             _monoOwner = owner;
             _slotPool = new UnitytComponentPool<SoundSlotComponentBase>(() =>
-                new GameObject(nameof(SoundSlotComponent), typeof(AudioSource))
-                .AddComponent<SoundSlotComponent>())
-                .SetParents(_monoOwner.transform);
+            {
+                SoundSlotComponent soundSlotComponent = new GameObject(nameof(SoundSlotComponent)).AddComponent<SoundSlotComponent>();
+                soundSlotComponent.transform.SetParent(_monoOwner.transform);
+
+                AudioSource source = soundSlotComponent.gameObject.GetComponent<AudioSource>();
+                source.playOnAwake = false;
+
+                return soundSlotComponent;
+            });
         }
 
         public ISoundManager InitSoundSlot(System.Func<SoundSlotComponentBase> onCreateSlot, int initializeSize = 0)

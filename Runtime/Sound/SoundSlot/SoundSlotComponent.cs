@@ -16,6 +16,26 @@ public class SoundSlotComponent : SoundSlotComponentBase
     protected AudioSource _audioSource; public AudioSource audioSource => _audioSource;
     public override AudioClip clip { get => audioSource.clip; set => audioSource.clip = value; }
 
+    public override float globalVolume
+    {
+        get => _globalVolume;
+        set
+        {
+            _globalVolume = value;
+            UpdateVolume();
+        }
+    }
+    public override float localVolume
+    {
+        get => _localVolume;
+        set
+        {
+            _localVolume = value;
+            UpdateVolume();
+        }
+    }
+
+
     public override bool IsPlaying() => _audioSource.isPlaying;
 
     public override Coroutine Play()
