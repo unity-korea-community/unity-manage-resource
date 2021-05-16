@@ -111,6 +111,9 @@ namespace UNKO.ManageResource
             if (data != null)
             {
                 unusedSlot.clip = data.GetAudioClip(this);
+                if (unusedSlot.clip == null)
+                    Debug.LogError($"[{_monoOwner.name}.{nameof(GetSlot)}]soundKey:{data.GetSoundKey()} Clip is null", _monoOwner);
+
                 unusedSlot.SetLocalVolume(data.GetVolume_0_1(this));
             }
 
