@@ -16,6 +16,7 @@ namespace UNKO.ManageResource
 
             _manager = new SoundManager(this);
             SoundSystem.Init(this);
+            DontDestroyOnLoad(this);
         }
 
         public ISoundManager AddData<T>(params T[] soundData) where T : ISoundData => _manager.AddData(soundData);
