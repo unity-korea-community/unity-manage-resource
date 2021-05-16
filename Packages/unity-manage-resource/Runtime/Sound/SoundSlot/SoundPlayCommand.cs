@@ -39,13 +39,16 @@ namespace UNKO.ManageResource
         public void Reset()
         {
             delay = 0f;
-            soundSlot.Stop();
+            OnPlayStart = delegate { };
+            OnPlayFinish = delegate { };
+            soundSlot.Reset();
         }
 
         public bool IsPlaying() => soundSlot.IsPlaying();
+
         public Coroutine Play()
         {
-            _coroutine = _onStartCoroutine(this.PlayCoroutine(soundSlot.Play, OnPlayStart.Invoke, OnPlayFinish.Invoke));
+            _coroutine = _onStartCoroutine(this.PlayCoroutine(soundSlot, OnPlayStart.Invoke, OnPlayFinish.Invoke));
             return _coroutine;
         }
 

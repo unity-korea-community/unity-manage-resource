@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UNKO.ManageResource
@@ -27,4 +25,5 @@ namespace UNKO.ManageResource
             return slot;
         }
     }
+
 }

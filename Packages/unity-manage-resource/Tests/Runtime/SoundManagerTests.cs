@@ -19,13 +19,13 @@ public class SoundManagerTests
             this._volume_0_1 = volume_0_1;
         }
 
-        public AudioClip GetAudioClip()
+        public string GetSoundKey() => _soundKey;
+        public AudioClip GetAudioClip(ISoundManager manager)
         {
             return null;
         }
 
-        public string GetSoundKey() => _soundKey;
-        public float GetVolume_0_1() => _volume_0_1;
+        public float GetVolume_0_1(ISoundManager manager) => _volume_0_1;
     }
 
     public enum SoundDataKey
@@ -38,6 +38,12 @@ public class SoundManagerTests
         new SoundData(SoundDataKey.sound1.ToString(), 0.1f),
         new SoundData(SoundDataKey.sound2.ToString(), 0.1f)
     };
+
+    [OneTimeSetUp]
+    public void SetUp()
+    {
+        new GameObject("Listener", typeof(AudioListener));
+    }
 
     [Test]
     public void PlayStopTest()
@@ -87,11 +93,10 @@ public class SoundManagerTests
         Assert.AreEqual(isFinished, false);
         Assert.AreEqual(command.IsPlaying(), false);
         yield return new WaitForSeconds(delay);
+        yield return null;
+
         Assert.AreEqual(command.IsPlaying(), true);
         Assert.AreEqual(isStarted, true);
-        Assert.AreEqual(isFinished, false);
-
-        yield return null;
         Assert.AreEqual(isFinished, true);
 
         command.Stop();
@@ -117,10 +122,9 @@ public class SoundManagerTests
 
     private ISoundManager GetManager()
     {
-        var manager = new SoundManager();
         CoroutineExecutor coroutineExecutor = new GameObject().AddComponent<CoroutineExecutor>();
-        manager.SetCoroutineFunc(coroutineExecutor.StartCoroutine, coroutineExecutor.StopCoroutine);
-        manager.InitSoundSlot(() => new SoundSlotForTest())
+        var manager = new SoundManager(coroutineExecutor);
+        manager.InitSoundSlot(() => new GameObject().AddComponent<SoundSlotForTest>())
             .AddData(dummyData);
 
         return manager;

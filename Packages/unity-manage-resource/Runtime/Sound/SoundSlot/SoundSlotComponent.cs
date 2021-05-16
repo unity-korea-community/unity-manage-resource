@@ -1,114 +1,106 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UNKO.ManageResource;
 
-namespace UNKO.ManageResource
+// namespace를 추가하면 어째선지 addcomponent가 되지않음;
+// namespace UNKO.ManageResource
+// {
+
+[RequireComponent(typeof(AudioSource))]
+public class SoundSlotComponent : SoundSlotComponentBase
 {
-    [RequireComponent(typeof(AudioSource))]
-    public class SoundSlotComponent : MonoBehaviour, ISoundSlot
+    private const float const_deltaTime = 0.02f;
+
+    [SerializeField]
+    protected AudioSource _audioSource; public AudioSource audioSource => _audioSource;
+    public override AudioClip clip { get => audioSource.clip; set => audioSource.clip = value; }
+
+    public override float globalVolume
     {
-        private const float const_deltaTime = 0.1f;
-
-        public event Action<IResourcePlayer> OnPlayStart;
-        public event Action<IResourcePlayer> OnPlayFinish;
-
-        [SerializeField]
-        private AudioSource _audioSource; public AudioSource audioSource => _audioSource;
-        [SerializeField]
-        private float _globalVolume = 0.5f;
-        [SerializeField]
-        private float _localVolume = 0.5f;
-
-        public AudioClip clip { get => audioSource.clip; set => audioSource.clip = value; }
-        public float globalVolume { get => _globalVolume; set => _globalVolume = value; }
-        public float localVolume { get => _localVolume; set => _localVolume = value; }
-
-        public bool IsPlaying() => _audioSource.isPlaying;
-
-
-        public Coroutine Play()
+        get => _globalVolume;
+        set
         {
-            return StartCoroutine(PlaySoundCoroutine(false));
+            _globalVolume = value;
+            UpdateVolume();
         }
-
-        public void Reset()
+    }
+    public override float localVolume
+    {
+        get => _localVolume;
+        set
         {
-            throw new NotImplementedException();
+            _localVolume = value;
+            UpdateVolume();
         }
+    }
 
-        public void SetDelay(float delay)
+
+    public override bool IsPlaying() => _audioSource.isPlaying;
+
+    public override Coroutine Play()
+    {
+        return StartCoroutine(PlaySoundCoroutine());
+    }
+
+    public override void Reset()
+    {
+        gameObject.SetActive(true);
+        Stop();
+        SetLoop(false);
+    }
+
+    public override void SetLoop(bool isLoop)
+    {
+        audioSource.loop = isLoop;
+    }
+
+    public override void Stop()
+    {
+        audioSource.Stop();
+    }
+
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
+    private ISoundSlot UpdateVolume()
+    {
+        audioSource.volume = _localVolume * _globalVolume;
+
+        return this;
+    }
+
+    IEnumerator PlaySoundCoroutine()
+    {
+        audioSource.Play();
+
+        float delayTime = 0f;
+        if (audioSource.loop)
         {
-            throw new NotImplementedException();
-        }
-
-        public void SetLoop(bool isLoop)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISoundSlot SetGlobalVolume(float volume_0_1)
-        {
-            _globalVolume = volume_0_1;
-            return UpdateVolume();
-        }
-
-        public ISoundSlot SetLocalVolume(float volume_0_1)
-        {
-            _localVolume = volume_0_1;
-            return UpdateVolume();
-        }
-
-        public void Stop()
-        {
-            audioSource.Stop();
-        }
-
-
-        private void Awake()
-        {
-            _audioSource = GetComponent<AudioSource>();
-        }
-
-        private ISoundSlot UpdateVolume()
-        {
-            audioSource.volume = _localVolume * _globalVolume;
-
-            return this;
-        }
-
-        IEnumerator PlaySoundCoroutine(bool loop)
-        {
-            audioSource.Play();
-            OnPlayStart?.Invoke(this);
-
-            float delayTime = 0f;
-            if (audioSource.loop)
+            while (true)
             {
-                while (true)
-                {
 #if UNITY_EDITOR
-                    delayTime += const_deltaTime;
-                    name = $"{audioSource.clip.name}/{delayTime:F1)}/{audioSource.clip.length}_loop";
+                delayTime += const_deltaTime;
+                name = $"{audioSource.clip.name}/{delayTime:F1}/{audioSource.clip.length:F1}_loop";
 #endif
-                    yield return new WaitForSeconds(const_deltaTime);
-                }
+                yield return new WaitForSeconds(const_deltaTime);
             }
-            else
+        }
+        else
+        {
+            while (audioSource.isPlaying)
             {
-                while (audioSource.isPlaying)
-                {
 #if UNITY_EDITOR
-                    delayTime += const_deltaTime;
-                    name = $"{audioSource.clip.name}/{delayTime:F1)}/{audioSource.clip.length}";
+                delayTime += const_deltaTime;
+                name = $"{audioSource.clip.name}/{delayTime:F1}/{audioSource.clip.length:F1}";
 #endif
-                    yield return new WaitForSeconds(const_deltaTime);
-                }
-
-                gameObject.SetActive(false);
+                yield return new WaitForSeconds(const_deltaTime);
             }
 
-            OnPlayFinish?.Invoke(this);
+            gameObject.SetActive(false);
         }
     }
 }
+// }

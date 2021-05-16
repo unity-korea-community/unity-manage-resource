@@ -14,16 +14,28 @@ namespace UNKO.ManageResource
         void SetLoop(bool isLoop);
     }
 
-    public interface IResourcePlayCommand : IResourcePlayer, IDisposable
+    public interface IResourcePlayCommand : IDisposable
     {
         event System.Action<IResourcePlayer> OnPlayStart;
         event System.Action<IResourcePlayer> OnPlayFinish;
 
         float delay { get; set; }
+
+        void Reset();
+        Coroutine Play();
+        void Stop();
+        void SetLoop(bool isLoop);
     }
 
     public static class ResourcePlayCommandHelper
     {
+        public static T ResetResource<T>(this T command)
+            where T : IResourcePlayCommand
+        {
+            command.Reset();
+            return command;
+        }
+
         public static T PlayResource<T>(this T command)
             where T : IResourcePlayCommand
         {
@@ -61,15 +73,15 @@ namespace UNKO.ManageResource
             return command;
         }
 
-        public static IEnumerator PlayCoroutine<T>(this T command, Func<Coroutine> onPlayCoroutine, System.Action<IResourcePlayCommand> onStart, System.Action<IResourcePlayCommand> onFinish)
+        public static IEnumerator PlayCoroutine<T>(this T command, IResourcePlayer player, System.Action<IResourcePlayer> onStart, System.Action<IResourcePlayer> onFinish)
             where T : IResourcePlayCommand
         {
             if (command.delay > 0f)
                 yield return new WaitForSeconds(command.delay);
 
-            onStart(command);
-            yield return onPlayCoroutine();
-            onFinish(command);
+            onStart(player);
+            yield return player.Play();
+            onFinish(player);
             command.Dispose();
         }
     }
