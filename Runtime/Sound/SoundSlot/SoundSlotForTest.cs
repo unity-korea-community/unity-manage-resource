@@ -3,16 +3,13 @@ using UnityEngine;
 
 namespace UNKO.ManageResource
 {
-    public class SoundSlotForTest : ISoundSlot
+    public class SoundSlotForTest : SoundSlotComponentBase
     {
-        public AudioClip clip { get; set; }
         public bool isPlaying { get; private set; }
         public bool isLoop { get; private set; }
+        public override AudioClip clip { get; set; }
 
-        public float globalVolume { get; set; }
-        public float localVolume { get; set; }
-
-        public bool IsPlaying() => isPlaying;
+        public override bool IsPlaying() => isPlaying;
 
         public ISoundSlot SetAudioClip(AudioClip clip)
         {
@@ -21,27 +18,26 @@ namespace UNKO.ManageResource
             return this;
         }
 
-        public void Stop()
-        {
-            isPlaying = false;
-        }
-
-        public Coroutine Play()
+        public override Coroutine Play()
         {
             isPlaying = true;
 
             return null;
         }
 
-        public void SetLoop(bool isLoop)
+        public override void Stop()
+        {
+            isPlaying = false;
+        }
+
+        public override void SetLoop(bool isLoop)
         {
             this.isLoop = isLoop;
         }
 
-        public void Reset()
+        public override void Reset()
         {
             Stop();
         }
-
     }
 }

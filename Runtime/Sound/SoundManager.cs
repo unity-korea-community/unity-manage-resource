@@ -1,11 +1,28 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UNKO.Utils;
 
 namespace UNKO.ManageResource
 {
+    public abstract class SoundSlotComponentBase : MonoBehaviour, ISoundSlot
+    {
+        [SerializeField]
+        protected float _globalVolume = 0.5f;
+        [SerializeField]
+        protected float _localVolume = 0.5f;
+
+        public float globalVolume { get => _globalVolume; set => _globalVolume = value; }
+        public float localVolume { get => _localVolume; set => _localVolume = value; }
+        public abstract AudioClip clip { get; set; }
+
+        public abstract bool IsPlaying();
+        public abstract Coroutine Play();
+        public abstract void Reset();
+        public abstract void SetLoop(bool isLoop);
+        public abstract void Stop();
+    }
+
     [System.Serializable]
     public class SoundManager : ISoundManager
     {
@@ -21,35 +38,28 @@ namespace UNKO.ManageResource
             }
         }
 
-
         [SerializeField, Range(0, 1)]
         float _volume_0_1 = 0.5f;
 
         Dictionary<string, ISoundData> _data = new Dictionary<string, ISoundData>();
-        SimplePool<ISoundSlot> _slotPool;
+        UnitytComponentPool<SoundSlotComponentBase> _slotPool;
         [SerializeField]
         CommandPool _commandPool = new CommandPool(new SoundPlayCommand());
+        MonoBehaviour _monoOwner;
 
-        System.Func<IEnumerator, Coroutine> _onStartCoroutine;
-        System.Action<Coroutine> _onStopCoroutine;
-
-        List<ISoundSlot> _playingSlots = new List<ISoundSlot>();
-
-        public SoundManager()
+        public SoundManager(MonoBehaviour owner)
         {
-            _slotPool = new SimplePool<ISoundSlot>(() =>
-                new GameObject(nameof(SoundPlayerComponent), typeof(AudioSource)).AddComponent<SoundSlotComponent>());
+            _monoOwner = owner;
+            _slotPool = new UnitytComponentPool<SoundSlotComponentBase>(() =>
+                new GameObject(nameof(SoundSlotComponent), typeof(AudioSource))
+                .AddComponent<SoundSlotComponent>())
+                .SetParents(_monoOwner.transform);
         }
 
-        public void SetCoroutineFunc(System.Func<IEnumerator, Coroutine> onStartCoroutine, System.Action<Coroutine> onStopCoroutine)
+        public ISoundManager InitSoundSlot(System.Func<SoundSlotComponentBase> onCreateSlot, int initializeSize = 0)
         {
-            _onStartCoroutine = onStartCoroutine;
-            _onStopCoroutine = onStopCoroutine;
-        }
-
-        public ISoundManager InitSoundSlot(System.Func<ISoundSlot> onCreateSlot, int initializeSize = 0)
-        {
-            _slotPool = new SimplePool<ISoundSlot>(onCreateSlot, initializeSize);
+            _slotPool = new UnitytComponentPool<SoundSlotComponentBase>(onCreateSlot, initializeSize)
+                .SetParents(_monoOwner.transform);
 
             return this;
         }
@@ -68,7 +78,8 @@ namespace UNKO.ManageResource
         public ISoundManager SetVolume(float volume_0_1)
         {
             _volume_0_1 = volume_0_1;
-            foreach (var slot in _playingSlots)
+
+            foreach (var slot in _slotPool.use)
                 slot.SetGlobalVolume(_volume_0_1);
 
             return this;
@@ -79,34 +90,38 @@ namespace UNKO.ManageResource
 
         public SoundPlayCommand GetSlot(string soundKey)
         {
-            if (_data.TryGetValue(soundKey, out var data) == false)
-            {
+            if (TryGetData(soundKey, out var data) == false)
                 Debug.LogError($"{nameof(SoundManager)} - data not contain(id:{soundKey})");
-                return null;
-            }
 
             return GetSlot(data);
         }
-
         public SoundPlayCommand GetSlot(ISoundData data)
         {
             ISoundSlot unusedSlot = _slotPool
                 .Spawn()
-                .SetLocalVolume(data.GetVolume_0_1())
                 .SetGlobalVolume(_volume_0_1);
-            unusedSlot.clip = data.GetAudioClip();
-            _playingSlots.Add(unusedSlot);
+
+            if (data != null)
+            {
+                unusedSlot.clip = data.GetAudioClip(this);
+                unusedSlot.SetLocalVolume(data.GetVolume_0_1(this));
+            }
 
             SoundPlayCommand command = _commandPool.Spawn();
-            command.Init(unusedSlot, _onStartCoroutine, _onStopCoroutine, OnReleaseSlot);
+            command.Init(unusedSlot, _monoOwner.StartCoroutine, _monoOwner.StopCoroutine, OnReleaseSlot);
 
             return command;
+        }
+
+        public bool TryGetData(string soundKey, out ISoundData data)
+        {
+            return _data.TryGetValue(soundKey, out data);
         }
 
         private void OnReleaseSlot(SoundPlayCommand command)
         {
             _commandPool.DeSpawn(command);
-            _playingSlots.Remove(command);
+            _slotPool.DeSpawn(command.soundSlot as SoundSlotComponent);
         }
 
         public void StopAll()
