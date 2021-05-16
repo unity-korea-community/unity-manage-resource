@@ -1,7 +1,7 @@
 {
   "name": "com.unko.manage-resource",
   "version": "1.0.0",
-  "displayName": "UNKO Manage-Resource",
+  "displayName": "UNKO Manage Resource",
   "description": "This is an example package",
   "unity": "2019.1",
   "author": {
