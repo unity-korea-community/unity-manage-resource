@@ -5,7 +5,9 @@
         "unko.manage-resource.runtime",
         "UnityEngine.TestRunner"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
