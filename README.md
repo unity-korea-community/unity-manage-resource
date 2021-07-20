@@ -27,6 +27,7 @@ public void PlaySound()
 
 1. SoundManagerComponent 인스턴스를 생성합니다.
 2. ISoundData를 구현한 데이터 클래스를 SoundManagerComponent 인스턴스에 Add합니다.
+   ISoundData를 구현한 데이터 클래스 예시: [Tests/Runtime/SoundManagerTests.cs](https://github.com/unity-korea-community/unity-manage-resource/blob/88b83db307576b31776bc4975c221201db9889cf/Tests/Runtime/SoundManagerTests.cs#L11)
 3. 사운드를 플레이합니다.
 
 ```csharp
