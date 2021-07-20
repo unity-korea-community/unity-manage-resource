@@ -9,9 +9,12 @@
 
 ## 기능
 
-- 컴포넌트로 사운드 재생
-  ![](.github/images/soundeventplayercomponent.png)
-- 코드 내 사운드 재생
+### 컴포넌트로 사운드 재생
+
+[Runtime/Sound/SoundEventPlayerComponent.cs](https://github.com/unity-korea-community/unity-manage-resource/blob/e31a461f12ba21459d8ef0c7e19882220a60b7bf/Runtime/Sound/SoundEventPlayerComponent.cs#L8)
+![](.github/images/soundeventplayercomponent.png)
+
+### 코드 내 사운드 재생
 
 ```csharp
 public void PlaySound()
