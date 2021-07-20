@@ -10,7 +10,7 @@
 ## 기능
 
 - 컴포넌트로 사운드 재생
-
+  ![](.github/images/soundeventplayercomponent.png)
 - 코드 내 사운드 재생
 
 ```csharp
