@@ -4,60 +4,39 @@ using UnityEngine;
 
 namespace UNKO.ManageResource
 {
-    public interface IResourcePlayer
+    public interface IResourcePlayCommand : IResourcePlayer, IDisposable
     {
-        bool IsPlaying();
+        event Action<IResourcePlayer> OnPlayStart;
+        event Action<IResourcePlayer> OnPlayFinish;
 
-        void Reset();
-        Coroutine Play();
-        void Stop();
-        void SetLoop(bool isLoop);
-    }
-
-    public interface IResourcePlayCommand : IDisposable
-    {
-        event System.Action<IResourcePlayer> OnPlayStart;
-        event System.Action<IResourcePlayer> OnPlayFinish;
-
-        float delay { get; set; }
-
-        void Reset();
-        Coroutine Play();
-        void Stop();
-        void SetLoop(bool isLoop);
+        float Delay { get; set; }
+        IResourcePlayer GetPlayer();
     }
 
     public static class ResourcePlayCommandHelper
     {
-        public static T ResetResource<T>(this T command)
+        public static T SetDelayResource<T>(this T command, float delay)
             where T : IResourcePlayCommand
         {
-            command.Reset();
+            command.Delay = delay;
             return command;
         }
-
         public static T PlayResource<T>(this T command)
             where T : IResourcePlayCommand
         {
-            command.Play();
+            command.PlayCoroutine();
             return command;
         }
 
-        public static T SetLoopResource<T>(this T command, bool isLoop)
+        public static T Stop<T>(this T command)
             where T : IResourcePlayCommand
         {
-            command.SetLoop(isLoop);
+            IResourcePlayer resourcePlayer = command.GetPlayer();
+            resourcePlayer.Stop();
             return command;
         }
 
-        public static T SetDelay<T>(this T command, float delay)
-            where T : IResourcePlayCommand
-        {
-            command.delay = delay;
-            return command;
-        }
-
-        public static T SetOnStart<T>(this T command, System.Action<IResourcePlayer> onStart)
+        public static T SetOnStart<T>(this T command, Action<IResourcePlayer> onStart)
             where T : IResourcePlayCommand
         {
             command.OnPlayStart -= onStart;
@@ -65,7 +44,7 @@ namespace UNKO.ManageResource
             return command;
         }
 
-        public static T SetOnFinish<T>(this T command, System.Action<IResourcePlayer> onFinish)
+        public static T SetOnFinish<T>(this T command, Action<IResourcePlayer> onFinish)
             where T : IResourcePlayCommand
         {
             command.OnPlayFinish -= onFinish;
@@ -73,16 +52,29 @@ namespace UNKO.ManageResource
             return command;
         }
 
-        public static IEnumerator PlayCoroutine<T>(this T command, IResourcePlayer player, System.Action<IResourcePlayer> onStart, System.Action<IResourcePlayer> onFinish)
+        public static IEnumerator PlayCoroutine<T>(this T command, IResourcePlayer player, Action<IResourcePlayer> onStart, Action<IResourcePlayer> onFinish)
             where T : IResourcePlayCommand
         {
-            if (command.delay > 0f)
-                yield return new WaitForSeconds(command.delay);
+            float waitSeconds = command.Delay;
+            while (waitSeconds > 0f)
+            {
+                yield return null;
+                waitSeconds -= Time.deltaTime;
+                // UnityEngine.Debug.Log($"PlayCoroutine - waiting.. waitSecond:{waitSeconds}, deltaTime: {Time.deltaTime}");
+            }
+            // UnityEngine.Debug.Log($"PlayCoroutine - waiting done waitSecond:{waitSeconds}, deltaTime: {Time.deltaTime}");
 
             onStart(player);
-            yield return player.Play();
+            yield return player.PlayCoroutine();
             onFinish(player);
             command.Dispose();
+        }
+
+        public static T AddTo<T>(this T command, ResourcePlayCommands commands)
+            where T : IResourcePlayCommand
+        {
+            commands.AddCommand(command);
+            return command;
         }
     }
 }

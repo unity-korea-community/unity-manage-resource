@@ -1,0 +1,24 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8-bom
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+[*.cs]
+dotnet_diagnostic.IDE0044.severity = none # ignore readonly
+dotnet_diagnostic.IDE0090.severity = none # 'new' expression can be simplified"
+dotnet_diagnostic.IDE0017.severity = none # 개체 초기화를 간단하게 만들 수 있습니다.
+dotnet_diagnostic.IDE0028.severity = none # 컬렉션 초기화를 단순화할 수 있습니다.
+dotnet_diagnostic.IDE0066.severity = none # 'switch' 식 사용
+
+dotnet_diagnostic.CS0136.severity = error # A local or parameter named '변수명' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter
+
+dotnet_diagnostic.IDE0051.severity = none
+dotnet_diagnostic.CS1591.severity = warning # 모든 public은 주석을 달게 합니다

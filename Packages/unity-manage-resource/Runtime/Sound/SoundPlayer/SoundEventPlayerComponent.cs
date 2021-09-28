@@ -45,14 +45,16 @@ namespace UNKO.ManageResource
 
         private void PlaySound(EUnityEvent when)
         {
-            if (_playInfoDictionary.TryGetValue(when, out List<SoundPlayEventInfo> list) == false)
+            if (!_playInfoDictionary.TryGetValue(when, out List<SoundPlayEventInfo> list))
+            {
                 return;
+            }
 
-            ISoundManager manager = SoundSystem.manager;
+            ISoundManager manager = SoundSystem.Manager;
             foreach (SoundPlayInfo playInfo in list)
             {
                 manager.GetSlot(playInfo.soundKey)
-                    .SetDelay(playInfo.delay);
+                    .SetDelayResource(playInfo.delay);
             }
         }
 
