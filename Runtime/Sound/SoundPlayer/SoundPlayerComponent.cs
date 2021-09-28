@@ -8,13 +8,13 @@ namespace UNKO.ManageResource
     public class SoundPlayerComponent : MonoBehaviour
     {
         [SerializeField]
-        private SoundPlayInfo _playInfo;
+        private SoundPlayInfo _playInfo = null;
 
         public void PlaySound()
         {
-            SoundSystem.manager
+            SoundSystem.Manager
                 .GetSlot(_playInfo.soundKey)
-                .SetDelay(_playInfo.delay)
+                .SetDelayResource(_playInfo.delay)
                 .PlayResource();
         }
     }

@@ -2,11 +2,13 @@
     "name": "unko.manage-resource.runtime.tests",
     "rootNamespace": "",
     "references": [
+        "unko.unity-utils.runtime",
         "unko.manage-resource.runtime",
         "UnityEngine.TestRunner"
     ],
     "includePlatforms": [
-        "Editor"
+        "Editor",
+        "Switch"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
