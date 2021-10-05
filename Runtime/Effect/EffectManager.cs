@@ -98,7 +98,11 @@ namespace UNKO.ManageResource
                 {
                     effectPool = new UnityComponentPool<EffectPlayerComponentBase>(effectPlayerOrigin);
                     Transform poolParents = new GameObject().transform;
-                    poolParents.SetParent(_owner.transform);
+
+                    if (_owner != null)
+                    {
+                        poolParents.SetParent(_owner.transform);
+                    }
                     effectPool.SetParents(poolParents);
 
                     _effectPoolByEffectID.Add(effectID, effectPool);
