@@ -5,6 +5,7 @@ namespace UNKO.ManageResource
 {
     public interface IEffectPlayer : IResourcePlayer
     {
+        GameObject gameObject { get; }
         string GetEffectID();
     }
 

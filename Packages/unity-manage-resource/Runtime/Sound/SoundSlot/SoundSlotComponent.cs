@@ -11,8 +11,6 @@ using UNKO.ManageResource;
 [RequireComponent(typeof(AudioSource))]
 public class SoundSlotComponent : SoundSlotComponentBase
 {
-    private const float const_deltaTime = 0.02f;
-
     public AudioSource HasAudioSource => _audioSource;
     [SerializeField]
     protected AudioSource _audioSource;
@@ -61,6 +59,7 @@ public class SoundSlotComponent : SoundSlotComponentBase
         gameObject.SetActive(true);
         _audioSource.Stop();
         SetLoop(false);
+        CancelInvoke(nameof(DeActive));
     }
 
     public override bool IsPlayingResource() => _audioSource.isPlaying;
@@ -104,13 +103,13 @@ public class SoundSlotComponent : SoundSlotComponentBase
             while (_audioSource.isPlaying)
             {
 #if UNITY_EDITOR
-                delayTime += const_deltaTime;
+                delayTime += Time.deltaTime;
 
                 string loopString = _audioSource.loop ? "_loop" : "";
                 name = $"{_audioSource.clip.name}/{delayTime:F1}/{_audioSource.clip.length:F1}{loopString}";
 #endif
 
-                yield return new WaitForSecondsRealtime(const_deltaTime);
+                yield return null;
             }
 
             yield return null;
@@ -119,6 +118,7 @@ public class SoundSlotComponent : SoundSlotComponentBase
 
         // NOTE 코루틴에서 딜레이 없이 바로 DeActive 하는 경우
         // 코루틴을 기다리는 이 다음행이 실행이 안되서 풀링이 안됨
+        CancelInvoke(nameof(DeActive));
         Invoke(nameof(DeActive), 0.02f);
     }
 

@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 namespace UNKO.ManageResource
@@ -9,6 +8,34 @@ namespace UNKO.ManageResource
         string GetSoundCategory();
         AudioClip GetAudioClip(ISoundManager manager);
         float GetVolume_0_1(ISoundManager manager);
+    }
+
+    public class SoundDataDummy : ISoundData
+    {
+        string _key;
+        AudioClip _clip;
+        float _volume;
+        string _soundCategory;
+
+        public SoundDataDummy(string key, AudioClip clip, float volume = 1, string soundCategory = "")
+        {
+            _key = key;
+            _clip = clip;
+            _volume = volume;
+            _soundCategory = soundCategory;
+        }
+
+        public AudioClip GetAudioClip(ISoundManager manager)
+            => _clip;
+
+        public string GetSoundCategory()
+            => _soundCategory;
+
+        public string GetSoundKey()
+            => _key;
+
+        public float GetVolume_0_1(ISoundManager manager)
+            => _volume;
     }
 
     public interface ISoundManager
