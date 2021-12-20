@@ -28,7 +28,7 @@ namespace UNKO.ManageResource
         public EffectManager AddData<T>(params T[] effectData)
             where T : IEffectData
         {
-            effectData.Foreach(item => _data.Add(item.GetEffectID(), item));
+            effectData.ForEach(item => _data.Add(item.GetEffectID(), item));
             return this;
         }
 

@@ -9,12 +9,6 @@ namespace UNKO.ManageResource
     [Serializable]
     public class SoundManager : ISoundManager
     {
-        public enum PoolingMode
-        {
-            Increase,
-            Dummy,
-        }
-
         // NOTE inspector 노출용 - 유니티 에디터는 제네릭 클래스를 인스펙터에 노출을 못하기 때문에
         [Serializable]
         public class SoundSlotPool : UnityComponentPool<SoundSlotComponentBase>
@@ -92,7 +86,7 @@ namespace UNKO.ManageResource
         public ISoundManager AddData<T>(params T[] soundData)
             where T : ISoundData
         {
-            soundData.Foreach(item => _data.Add(item.GetSoundKey(), item));
+            soundData.ForEach(item => _data.Add(item.GetSoundKey(), item));
             return this;
         }
 
@@ -165,7 +159,7 @@ namespace UNKO.ManageResource
                 AudioClip playClip = data.GetAudioClip(this);
                 if (playClip == null)
                 {
-                    // Debug.LogError($"[{_monoOwner.name}.{nameof(GetSlot)}]soundKey:{data.GetSoundKey()} Clip is null", _monoOwner);
+                    Debug.LogError($"[{_monoOwner.name}.{nameof(GetSlot)}]soundKey:{data.GetSoundKey()} Clip is null", _monoOwner);
                 }
 
                 string soundCategory = data.GetSoundCategory();
@@ -177,8 +171,6 @@ namespace UNKO.ManageResource
                 unusedSlot.SetLocalVolume(localVolume);
                 unusedSlot.SetMute(isMute);
             }
-
-            Debug.Log($"key:{data.GetSoundKey()}, play");
 
             SoundPlayCommand playCommand = _commandPool.Spawn();
             playCommand.Init(unusedSlot, DespawnCommand);
@@ -258,7 +250,7 @@ namespace UNKO.ManageResource
 
         public ISoundManager ResetPool(Func<SoundSlotComponentBase, bool> onFilter)
         {
-            _slotPool.Use.Where(onFilter).Foreach(_slotPool.OnDisposeItem);
+            _slotPool.Use.Where(onFilter).ForEach(_slotPool.OnDisposeItem);
 
             return this;
         }

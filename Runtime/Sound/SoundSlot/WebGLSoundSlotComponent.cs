@@ -1,3 +1,4 @@
+#if UNITY_WEBGL
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -166,3 +167,4 @@ public class WebGLSoundSlotComponent : SoundSlotComponentBase
         this.Stop();
     }
 }
+#endif

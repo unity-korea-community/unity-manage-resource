@@ -41,7 +41,7 @@ namespace UNKO.ManageResource
 
         public virtual IEnumerator PlayCoroutine()
         {
-            IEnumerator playCoroutine = this.PlayCoroutine(ResourcePlayer, OnPlayStart.Invoke, OnPlayFinish.Invoke);
+            IEnumerator playCoroutine = this.PlayCoroutine(ResourcePlayer, (player) => OnPlayStart.Invoke(player), (player) => OnPlayFinish.Invoke(player));
             ResourcePlayer.StartCoroutine(playCoroutine);
             return playCoroutine;
         }
