@@ -1,0 +1,21 @@
+{
+    "name": "unko.unity-manage-ugui.runtime.tests",
+    "rootNamespace": "",
+    "references": [
+        "unko.unity-utils.runtime",
+        "unko.unity-manage-ugui.runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,55 +1,82 @@
-﻿# unity-manage-resource
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Initial page
 
 ## 소개
 
-유니티 내 리소스(이펙트, 사운드 등)을 관리하는 라이브러리입니다.
-이펙트는 현재 작업중입니다.
+이 프로젝트는 Unity Custom Package 프로젝트에서 자주 보이는 패턴을 Template 프로젝트로 만들었습니다.
 
-## 기능
+## repository generate 된 뒤 해야 할 일
 
-### 컴포넌트로 사운드 재생
+* github action에 환경변수 변경
+* github secret 추가
+* workspace - unity project 이름 변경
+* workspace - unity package 세팅 
+  * Example
+    * com.unko.\[PackageName\].editor
+    * com.unko.\[PackageName\].editor.tests
 
-[Runtime/Sound/SoundEventPlayerComponent.cs](https://github.com/unity-korea-community/unity-manage-resource/blob/e31a461f12ba21459d8ef0c7e19882220a60b7bf/Runtime/Sound/SoundEventPlayerComponent.cs#L8)
-![](.github/images/soundeventplayercomponent.png)
+## 들어있는 것
 
-### 코드 내 사운드 재생
+### master branch
 
-```csharp
-public void PlaySound()
-{
-    SoundSystem.manager
-        .GetSlot("soundkey")
-        .SetDelay(0f)
-        .PlayResource();
-}
+unity package manager에서 git link를 통해 바로 설치할 수 있는 unity custom package 형식의 branch입니다.
+
+```text
+<root>
+  ├── package.json
+  ├── README.md
+  ├── CHANGELOG.md
+  ├── LICENSE.md
+  ├── Editor
+  │   ├── Unity.[YourPackageName].Editor.asmdef
+  │   └── EditorExample.cs
+  ├── Runtime
+  │   ├── Unity.[YourPackageName].asmdef
+  │   └── RuntimeExample.cs
+  ├── Tests
+  │   ├── Editor
+  │   │   ├── Unity.[YourPackageName].Editor.Tests.asmdef
+  │   │   └── EditorExampleTest.cs
+  │   └── Runtime
+  │        ├── Unity.[YourPackageName].Tests.asmdef
+  │        └── RuntimeExampleTest.cs
+  └── Documentation~
+       └── [YourPackageName].md
 ```
 
-## 사용법
+유니티 공식 메뉴얼 중 패키지 레이아웃을 따릅니다.
 
-1. SoundManagerComponent 인스턴스를 생성합니다.
-2. ISoundData를 구현한 데이터 클래스를 SoundManagerComponent 인스턴스에 Add합니다.
-   ISoundData를 구현한 데이터 클래스 예시: [Tests/Runtime/SoundManagerTests.cs](https://github.com/unity-korea-community/unity-manage-resource/blob/88b83db307576b31776bc4975c221201db9889cf/Tests/Runtime/SoundManagerTests.cs#L11)
-3. 사운드를 플레이합니다.
+[https://docs.unity3d.com/kr/2019.4/Manual/cus-layout.html](https://docs.unity3d.com/kr/2019.4/Manual/cus-layout.html)
 
-```csharp
-// 예시 코드
-void Awake()
-{
-    SoundManagerComponent.instance.AddData(datas);
-    SoundSystem.manager
-        .GetSlot("soundkey")
-        .SetDelay(0f)
-        .PlayResource();
-}
+#### master - github action
+
+* **copy-to-workspace.yml**
+  * push시 workspace branch에 copy합니다.
+* **manual-copy.yml**
+  * 수동으로 workspace branch에 copy합니다.
+
+
+
+### workspace branch
+
+해당 패키지를 작업할 Unity Project입니다.
+
+```text
+<root>
+├─.github
+│  └─workflows
+├─Assets
+│  └─[YourPackageName]
+│      ├─Editor
+│      ├─Runtime
+│      └─Tests
+├─Packages
+├─ProjectSettings
 ```
 
-## 설치
+#### workspace - github action
 
-Unity Editor/상단 Window 탭/Package Manager/+ 버튼/‌
+* **manual-copy.yml**
+  * 수동으로 workspace branch에 copy합니다.
+* **unittest-and-upload-master.yml**
+  * unity - unit test를 한 뒤 성공하면 master branch에 copy합니다.
 
-Add package from git URL 클릭 후‌
-
-이 저장소의 URL 입력‌
-​[https://github.com/unity-korea-community/unity-manage-resource.git](https://github.com/unity-korea-community/unity-manage-resource.git)
