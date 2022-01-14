@@ -1,14 +1,20 @@
 {
-    "name": "com.unko.manage-resource",
+    "name": "com.unko.unity-manage-ugui",
     "version": "1.0.1",
-    "displayName": "UNKO Manage Resource",
-    "description": "This is an example package",
+    "displayName": "UNKO Manage UGUI",
+    "description": "UGUI 기반의 UI를 장면 단위로 관리하는 프레임워크입니다",
     "unity": "2019.1",
     "author": {
         "name": "UNKO",
         "url": "https://github.com/unity-korea-community"
     },
-    "hideInEditor": false,
+    "bugs": {
+        "url": "https://github.com/unity-korea-community/unity-manage-ugui/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/unity-korea-community/unity-manage-ugui.git"
+    },
     "dependencies": {
         "com.unko.unity-utils": "1.0.4"
     }
